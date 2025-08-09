@@ -2,14 +2,16 @@
 pragma solidity ^0.8.8;
 
 import {Test, console} from "forge-std/Test.sol";
-import {DecentralizedStableCoin} from "../src/DecentralizedStableCoin.sol";
-import {DeployDecentralizedStableCoin} from "../script/DeployDecentralizedStableCoin.s.sol";
+import {DecentralizedStableCoin} from "../../src/DecentralizedStableCoin.sol";
+import {DSCEngine} from "../../src/DSCEngine.sol";
+import {DeployDecentralizedStableCoin} from "../../script/DeployDecentralizedStableCoin.s.sol";
 
 contract DecentralizedStableCoinTest is Test {
     error OwnableUnauthorizedAccount(address sender);
 
     DeployDecentralizedStableCoin public deployDecentralizedStableCoin;
     DecentralizedStableCoin public decentralizedStableCoin;
+    DSCEngine public dscEngine;
     address public user;
     address public user1;
     uint256 private constant INITIAL_BALANCE = 10 ether;
@@ -20,7 +22,7 @@ contract DecentralizedStableCoinTest is Test {
         user1 = makeAddr("user1");
         vm.deal(user, INITIAL_BALANCE);
         vm.deal(user1, INITIAL_BALANCE);
-        decentralizedStableCoin = deployDecentralizedStableCoin.run(user);
+        (decentralizedStableCoin, dscEngine) = deployDecentralizedStableCoin.run();
     }
 
     function testDeployedCoinName() public view {
@@ -37,7 +39,7 @@ contract DecentralizedStableCoinTest is Test {
 
     function testOwnerAddress() public view {
         address owner = decentralizedStableCoin.owner();
-        assertEq(owner, user);
+        assertEq(owner, address(dscEngine));
     }
 
     function testMintingOnlyByOwner() public {
@@ -45,7 +47,7 @@ contract DecentralizedStableCoinTest is Test {
         vm.expectRevert(abi.encodeWithSelector(OwnableUnauthorizedAccount.selector, user1));
         decentralizedStableCoin.mint(user1, 100);
 
-        vm.prank(user);
+        vm.prank(address(dscEngine));
         bool success = decentralizedStableCoin.mint(user1, 100);
         assertEq(success, true);
     }
