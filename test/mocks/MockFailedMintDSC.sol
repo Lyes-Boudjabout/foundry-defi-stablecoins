@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import { ERC20Burnable, ERC20 } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { DecentralizedStableCoin } from "../../src/DecentralizedStableCoin.sol";
+import {ERC20Burnable, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {DecentralizedStableCoin} from "../../src/DecentralizedStableCoin.sol";
 
 contract MockFailedMintDSC is DecentralizedStableCoin {
     error DecentralizedStableCoin__AmountMustBeMoreThanZero();
@@ -18,7 +18,7 @@ contract MockFailedMintDSC is DecentralizedStableCoin {
     Related code changes can be viewed in this commit:
     https://github.com/OpenZeppelin/openzeppelin-contracts/commit/13d5e0466a9855e9305119ed383e54fc913fdc60
     */
-    constructor() { }
+    constructor() {}
 
     function burn(uint256 _amount) public override onlyOwner {
         uint256 balance = balanceOf(msg.sender);

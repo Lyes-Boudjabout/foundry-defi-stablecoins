@@ -13,7 +13,7 @@ interface IDSCEngine {
 
     function redeemCollateralForDsc(address, uint256, uint256) external;
 
-    function redeemCollateral(address, uint256) external;
+    function redeemCollateral(address tokenCollateralAddress, uint256 amountCollateral) external;
 
     function mintDsc(uint256 amountDscToMint) external;
 
@@ -21,5 +21,5 @@ interface IDSCEngine {
 
     function liquidate(address token, address user, uint256 debtToCover) external;
 
-    function getHealthFactor(address user) external view returns(uint256);
+    function getHealthFactor(address user) external view returns (uint256);
 }
