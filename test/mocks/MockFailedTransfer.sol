@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import {ERC20Burnable, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {DecentralizedStableCoin} from "../../src/DecentralizedStableCoin.sol";
+import { ERC20Burnable, ERC20 } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MockFailedTransfer is DecentralizedStableCoin {
+contract MockFailedTransfer is ERC20Burnable, Ownable {
     error DecentralizedStableCoin__AmountMustBeMoreThanZero();
     error DecentralizedStableCoin__BurnAmountExceedsBalance();
     error DecentralizedStableCoin__NotZeroAddress();
@@ -18,7 +17,7 @@ contract MockFailedTransfer is DecentralizedStableCoin {
     Related code changes can be viewed in this commit:
     https://github.com/OpenZeppelin/openzeppelin-contracts/commit/13d5e0466a9855e9305119ed383e54fc913fdc60
     */
-    constructor() {}
+    constructor() ERC20("DecentralizedStableCoin", "DSC") Ownable(msg.sender) { }
 
     function burn(uint256 _amount) public override onlyOwner {
         uint256 balance = balanceOf(msg.sender);
@@ -31,9 +30,8 @@ contract MockFailedTransfer is DecentralizedStableCoin {
         super.burn(_amount);
     }
 
-    function mint(address _to, uint256 _amount) external override onlyOwner returns (bool) {
-        _mint(_to, _amount);
-        return true;
+    function mint(address account, uint256 amount) public {
+        _mint(account, amount);
     }
 
     function transfer(address, /*recipient*/ uint256 /*amount*/ ) public pure override returns (bool) {

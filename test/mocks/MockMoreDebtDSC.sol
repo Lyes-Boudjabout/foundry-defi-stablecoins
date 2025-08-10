@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.8;
 
-import {ERC20Burnable, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {MockV3Aggregator} from "./MockV3Aggregator.sol";
-import {DecentralizedStableCoin} from "../../src/DecentralizedStableCoin.sol";
+import { ERC20Burnable, ERC20 } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { MockV3Aggregator } from "./MockV3Aggregator.sol";
 
 /*
  * @title DecentralizedStableCoin
@@ -18,7 +16,7 @@ import {DecentralizedStableCoin} from "../../src/DecentralizedStableCoin.sol";
 * This is the contract meant to be owned by DSCEngine. It is a ERC20 token that can be minted and burned by the
 DSCEngine smart contract.
  */
-contract MockMoreDebtDSC is DecentralizedStableCoin {
+contract MockMoreDebtDSC is ERC20Burnable, Ownable {
     error DecentralizedStableCoin__AmountMustBeMoreThanZero();
     error DecentralizedStableCoin__BurnAmountExceedsBalance();
     error DecentralizedStableCoin__NotZeroAddress();
@@ -33,7 +31,7 @@ contract MockMoreDebtDSC is DecentralizedStableCoin {
     Related code changes can be viewed in this commit:
     https://github.com/OpenZeppelin/openzeppelin-contracts/commit/13d5e0466a9855e9305119ed383e54fc913fdc60
     */
-    constructor(address _mockAggregator) {
+    constructor(address _mockAggregator) ERC20("DecentralizedStableCoin", "DSC") Ownable(msg.sender) {
         mockAggregator = _mockAggregator;
     }
 
@@ -50,7 +48,7 @@ contract MockMoreDebtDSC is DecentralizedStableCoin {
         super.burn(_amount);
     }
 
-    function mint(address _to, uint256 _amount) external override onlyOwner returns (bool) {
+    function mint(address _to, uint256 _amount) external onlyOwner returns (bool) {
         if (_to == address(0)) {
             revert DecentralizedStableCoin__NotZeroAddress();
         }

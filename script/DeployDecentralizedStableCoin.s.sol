@@ -7,25 +7,22 @@ import {DSCEngine} from "../src/DSCEngine.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployDecentralizedStableCoin is Script {
-    DecentralizedStableCoin decentralizedStableCoin;
-    DSCEngine dscEngine;
-    HelperConfig public config;
     address[] public tokenAddresses;
     address[] public priceFeedAddresses;
 
-    function run() public returns (DecentralizedStableCoin, DSCEngine, HelperConfig) {
-        config = new HelperConfig();
+    function run() external returns (DecentralizedStableCoin, DSCEngine, HelperConfig) {
+        HelperConfig helperConfig = new HelperConfig(); // This comes with our mocks!
+
         (address wethUsdPriceFeed, address wbtcUsdPriceFeed, address weth, address wbtc, uint256 deployerKey) =
-            config.activeNetworkConfig();
+            helperConfig.activeNetworkConfig();
         tokenAddresses = [weth, wbtc];
         priceFeedAddresses = [wethUsdPriceFeed, wbtcUsdPriceFeed];
 
         vm.startBroadcast(deployerKey);
-        decentralizedStableCoin = new DecentralizedStableCoin();
-        dscEngine = new DSCEngine(tokenAddresses, priceFeedAddresses, decentralizedStableCoin);
-        decentralizedStableCoin.transferOwnership(address(dscEngine));
+        DecentralizedStableCoin dsc = new DecentralizedStableCoin();
+        DSCEngine dscEngine = new DSCEngine(tokenAddresses, priceFeedAddresses, address(dsc));
+        dsc.transferOwnership(address(dscEngine));
         vm.stopBroadcast();
-
-        return (decentralizedStableCoin, dscEngine, config);
+        return (dsc, dscEngine, helperConfig);
     }
 }
