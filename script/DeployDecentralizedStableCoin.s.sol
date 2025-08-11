@@ -25,4 +25,12 @@ contract DeployDecentralizedStableCoin is Script {
         vm.stopBroadcast();
         return (dsc, dscEngine, helperConfig);
     }
+
+    function getTokenAddress(uint256 index) public view returns (address) {
+        return tokenAddresses[index];
+    }
+
+    function getPriceFeedAddress(uint256 index) public view returns (address) {
+        return priceFeedAddresses[index];
+    }
 }

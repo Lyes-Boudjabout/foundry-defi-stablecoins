@@ -29,9 +29,9 @@ import {DecentralizedStableCoin} from "./DecentralizedStableCoin.sol";
  * @notice This contract is based on the MakerDAO DSS system
  */
 contract DSCEngine is ReentrancyGuard {
-    ///////////////////
-    // Errors
-    ///////////////////
+    /**
+     * Errors     *
+     */
     error DSCEngine__TokenAddressesAndPriceFeedAddressesAmountsDontMatch();
     error DSCEngine__NeedsMoreThanZero();
     error DSCEngine__TokenNotAllowed(address token);
@@ -41,14 +41,14 @@ contract DSCEngine is ReentrancyGuard {
     error DSCEngine__HealthFactorOk();
     error DSCEngine__HealthFactorNotImproved();
 
-    ///////////////////
-    // Types
-    ///////////////////
+    /**
+     * Types     *
+     */
     using OracleLib for AggregatorV3Interface;
 
-    ///////////////////
-    // State Variables
-    ///////////////////
+    /**
+     * State Variables     *
+     */
     DecentralizedStableCoin private immutable i_dsc;
 
     uint256 private constant LIQUIDATION_THRESHOLD = 50; // This means you need to be 200% over-collateralized
@@ -68,9 +68,9 @@ contract DSCEngine is ReentrancyGuard {
     /// @dev If we know exactly how many tokens we have, we could make this immutable!
     address[] private s_collateralTokens;
 
-    ///////////////////
-    // Events
-    ///////////////////
+    /**
+     * Events     *
+     */
     event CollateralDeposited(address indexed user, address indexed token, uint256 indexed amount);
     event CollateralRedeemed(address indexed redeemFrom, address indexed redeemTo, address token, uint256 amount); // if
         // redeemFrom != redeemedTo, then it was liquidated
